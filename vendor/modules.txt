@@ -1,0 +1,101 @@
+# github.com/BurntSushi/toml v0.3.1
+github.com/BurntSushi/toml
+# github.com/bitly/go-simplejson v0.5.0
+github.com/bitly/go-simplejson
+# github.com/fsnotify/fsnotify v1.4.7
+github.com/fsnotify/fsnotify
+# github.com/ghodss/yaml v1.0.0
+github.com/ghodss/yaml
+# github.com/go-log/log v0.1.0
+github.com/go-log/log
+github.com/go-log/log/log
+# github.com/golang/protobuf v1.3.2
+github.com/golang/protobuf/proto
+github.com/golang/protobuf/ptypes
+github.com/golang/protobuf/ptypes/any
+github.com/golang/protobuf/ptypes/duration
+github.com/golang/protobuf/ptypes/timestamp
+# github.com/hashicorp/hcl v1.0.0
+github.com/hashicorp/hcl
+github.com/hashicorp/hcl/hcl/ast
+github.com/hashicorp/hcl/hcl/parser
+github.com/hashicorp/hcl/hcl/scanner
+github.com/hashicorp/hcl/hcl/strconv
+github.com/hashicorp/hcl/hcl/token
+github.com/hashicorp/hcl/json/parser
+github.com/hashicorp/hcl/json/scanner
+github.com/hashicorp/hcl/json/token
+# github.com/imdario/mergo v0.3.8
+github.com/imdario/mergo
+# github.com/micro/go-micro v1.18.0
+github.com/micro/go-micro/config
+github.com/micro/go-micro/config/encoder
+github.com/micro/go-micro/config/encoder/hcl
+github.com/micro/go-micro/config/encoder/json
+github.com/micro/go-micro/config/encoder/toml
+github.com/micro/go-micro/config/encoder/xml
+github.com/micro/go-micro/config/encoder/yaml
+github.com/micro/go-micro/config/loader
+github.com/micro/go-micro/config/loader/memory
+github.com/micro/go-micro/config/reader
+github.com/micro/go-micro/config/reader/json
+github.com/micro/go-micro/config/source
+github.com/micro/go-micro/config/source/file
+github.com/micro/go-micro/util/log
+# github.com/micro/go-plugins v1.5.1
+github.com/micro/go-plugins/config/source/grpc/proto
+# golang.org/x/net v0.0.0-20191109021931-daa7c04131f5
+golang.org/x/net/context
+golang.org/x/net/http/httpguts
+golang.org/x/net/http2
+golang.org/x/net/http2/hpack
+golang.org/x/net/idna
+golang.org/x/net/internal/timeseries
+golang.org/x/net/trace
+# golang.org/x/sys v0.0.0-20191110163157-d32e6e3b99c4
+golang.org/x/sys/unix
+# golang.org/x/text v0.3.2
+golang.org/x/text/secure/bidirule
+golang.org/x/text/transform
+golang.org/x/text/unicode/bidi
+golang.org/x/text/unicode/norm
+# google.golang.org/genproto v0.0.0-20191108220845-16a3f7862a1a
+google.golang.org/genproto/googleapis/rpc/status
+# google.golang.org/grpc v1.25.1
+google.golang.org/grpc
+google.golang.org/grpc/backoff
+google.golang.org/grpc/balancer
+google.golang.org/grpc/balancer/base
+google.golang.org/grpc/balancer/roundrobin
+google.golang.org/grpc/binarylog/grpc_binarylog_v1
+google.golang.org/grpc/codes
+google.golang.org/grpc/connectivity
+google.golang.org/grpc/credentials
+google.golang.org/grpc/credentials/internal
+google.golang.org/grpc/encoding
+google.golang.org/grpc/encoding/proto
+google.golang.org/grpc/grpclog
+google.golang.org/grpc/internal
+google.golang.org/grpc/internal/backoff
+google.golang.org/grpc/internal/balancerload
+google.golang.org/grpc/internal/binarylog
+google.golang.org/grpc/internal/buffer
+google.golang.org/grpc/internal/channelz
+google.golang.org/grpc/internal/envconfig
+google.golang.org/grpc/internal/grpcrand
+google.golang.org/grpc/internal/grpcsync
+google.golang.org/grpc/internal/resolver/dns
+google.golang.org/grpc/internal/resolver/passthrough
+google.golang.org/grpc/internal/syscall
+google.golang.org/grpc/internal/transport
+google.golang.org/grpc/keepalive
+google.golang.org/grpc/metadata
+google.golang.org/grpc/naming
+google.golang.org/grpc/peer
+google.golang.org/grpc/resolver
+google.golang.org/grpc/serviceconfig
+google.golang.org/grpc/stats
+google.golang.org/grpc/status
+google.golang.org/grpc/tap
+# gopkg.in/yaml.v2 v2.2.4
+gopkg.in/yaml.v2

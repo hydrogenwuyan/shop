@@ -1,0 +1,35 @@
+conf:
+  etcd:
+    enabled: true
+    host: 127.0.0.1
+    port: 2379
+  db:
+    mysql:
+      enabled: true
+      address: 127.0.0.1
+      port: 3306
+      user: otc
+      password: otc
+      maxIdleConnection: 100
+      maxOpenConnection: 130
+  jwt:
+    secretKey: W6VjDud2W1kMG3BicbMNlGgI4ZfcoHtMGLWr
+  redis:
+    enabled: true
+    address: 127.0.0.1
+    port: 6379
+    dbNum: 8
+    password: otcpay
+    timeout: 3000
+  user_srv:
+    name: shop.user.srv
+    address: 127.0.0.1
+    port: 12020
+  user_web:
+    name: shop.user.web
+    address: 127.0.0.1
+    port: 12021
+  auth_srv:
+    name: shop.auth.srv
+    address: 127.0.0.1
+    port: 12022
