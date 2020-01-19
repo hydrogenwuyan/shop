@@ -2,7 +2,7 @@ package token
 
 import (
 	"github.com/go-redis/redis"
-	"github.com/micro/go-micro/util/log"
+	log "github.com/sirupsen/logrus"
 	"project/shop/basic/config"
 	"project/shop/common"
 	"sync"
@@ -26,7 +26,7 @@ type TokenService interface {
 
 func Init() (err error) {
 	once.Do(func() {
-		log.Info("start token service init")
+		log.Info("token服务开始初始化...")
 
 		cfg = &common.Jwt{}
 		err := config.GetConfigurator().App("jwt", cfg)

@@ -6,10 +6,11 @@ import (
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/etcd"
-	"github.com/micro/go-micro/util/log"
 	"github.com/micro/go-plugins/config/source/grpc"
 	openTrace "github.com/micro/go-plugins/wrapper/trace/opentracing"
 	"github.com/opentracing/opentracing-go"
+	log "github.com/sirupsen/logrus"
+	"os"
 	authsrvcontroller "project/shop/auth_srv/controller"
 	authsrvmodel "project/shop/auth_srv/model"
 	authsrvproto "project/shop/auth_srv/proto"
@@ -29,6 +30,7 @@ type authCfg struct {
 }
 
 func main() {
+	initLog()
 	initConfig()
 
 	micReg := etcd.NewRegistry(registryOptions)
@@ -60,11 +62,13 @@ func main() {
 	// 注册服务
 	authsrvproto.RegisterUserHandler(service.Server(), new(authsrvcontroller.Service))
 
-	log.Info("start auth server...")
+	log.Info("authsrv: 启动authsrv服务...")
 
 	// 启动服务
 	if err := service.Run(); err != nil {
-		log.Fatal(err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("authsrv:  tcp accept错误")
 	}
 
 }
@@ -90,10 +94,25 @@ func initConfig() (err error) {
 
 	err = config.GetConfigurator().App(appName, cfg)
 	if err != nil {
-		log.Fatalf("auth server init config fail, err: %v", err)
+		log.WithFields(log.Fields{
+			"appName": appName,
+			"error":   err,
+		}).Fatal("authsrv: 初始化配置失败")
 		return
 	}
 
-	log.Infof("config: %v", *cfg)
+	log.WithFields(log.Fields{
+		"cfg": *cfg,
+	}).Info("authsrv: 配置信息")
+
 	return
+}
+
+func initLog() {
+	formatter := &log.TextFormatter{
+		FullTimestamp: true,
+	}
+	log.SetFormatter(formatter)
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.DebugLevel)
 }

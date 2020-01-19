@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/micro/go-micro/config"
-	"github.com/micro/go-micro/util/log"
+	log "github.com/sirupsen/logrus"
 	"sync"
 )
 
@@ -20,17 +20,24 @@ type configurator struct {
 	conf config.Config
 }
 
+// 根据app name获取配置
 func (c *configurator) App(name string, config interface{}) (err error) {
 	v := c.conf.Get(name)
 	if v != nil {
 		err = v.Scan(config)
 		if err != nil {
-			log.Errorf("config scan fail, name:%s err: %v", name, err)
+			log.WithFields(log.Fields{
+				"appName": name,
+				"error":   err,
+			}).Error("basic: 获取配置失败")
 			return
 		}
 	} else {
 		err = fmt.Errorf("config get fail")
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"appName": name,
+			"error":   err,
+		}).Error("basic: 获取配置失败")
 		return
 	}
 
@@ -39,14 +46,16 @@ func (c *configurator) App(name string, config interface{}) (err error) {
 
 func (c *configurator) init(ops Options) (err error) {
 	once.Do(func() {
-		log.Info("start init configurator")
+		log.Info("basic: configurator开始初始化...")
 
 		c.conf = config.NewConfig()
 
 		// 加载配置
 		err := c.conf.Load(ops.Sources...)
 		if err != nil {
-			log.Errorf("load source fail, err: %v", err)
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Error("basic: 加载sources失败")
 			return
 		}
 
@@ -54,19 +63,26 @@ func (c *configurator) init(ops Options) (err error) {
 		go func() {
 			watch, err := c.conf.Watch()
 			if err != nil {
-				log.Errorf("watch fail, err: %v", err)
+				log.WithFields(log.Fields{
+					"error": err,
+				}).Error("basic: 加载sources失败")
 				return
 			}
 
 			// 开始监听
 			for {
+				// TODO: 配置请求频率过高,待优化（现在是1s一次）
 				v, err := watch.Next()
 				if err != nil {
-					log.Errorf("watch next, err: %v", err)
+					log.WithFields(log.Fields{
+						"error": err,
+					}).Error("basic: 监听配置变动失败")
 					return
 				}
 
-				log.Debugf("config changed, %s", string(v.Bytes()))
+				log.WithFields(log.Fields{
+					"v": string(v.Bytes()),
+				}).Debug("basic: 配置变动")
 			}
 		}()
 	})

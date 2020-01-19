@@ -5,8 +5,8 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/micro/go-micro/config"
-	"github.com/micro/go-micro/util/log"
 	proto "github.com/micro/go-plugins/config/source/grpc/proto"
+	log "github.com/sirupsen/logrus"
 	"strings"
 	"time"
 )
@@ -16,8 +16,11 @@ type ConfigService struct{}
 
 // 读取配置
 func (s ConfigService) Read(ctx context.Context, req *proto.ReadRequest) (resp *proto.ReadResponse, err error) {
+	log.WithFields(log.Fields{
+		"ReadRequest": *req,
+	}).Debug("configsrv: 读取配置")
+
 	appName := parsePath(req.Path)
-	fmt.Println("*********appName********", appName)
 	resp = &proto.ReadResponse{
 		ChangeSet: getConfig(appName),
 	}
@@ -26,6 +29,10 @@ func (s ConfigService) Read(ctx context.Context, req *proto.ReadRequest) (resp *
 
 // 监听配置变动，发送变动的配置给各个服务
 func (s ConfigService) Watch(req *proto.WatchRequest, server proto.Source_WatchServer) (err error) {
+	log.WithFields(log.Fields{
+		"watchRequest": *req,
+	}).Debug("configsrv: 请求配置信息")
+
 	appName := parsePath(req.Path)
 	resp := &proto.WatchResponse{
 		ChangeSet: getConfig(appName),
@@ -33,7 +40,10 @@ func (s ConfigService) Watch(req *proto.WatchRequest, server proto.Source_WatchS
 
 	err = server.Send(resp)
 	if err != nil {
-		log.Errorf("source watch server send fail, err: %v", err)
+		log.WithFields(log.Fields{
+			"watchResponse": *resp,
+			"error":         err,
+		}).Error("configsrv: 发送配置信息失败")
 	}
 
 	return

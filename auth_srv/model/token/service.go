@@ -3,7 +3,7 @@ package token
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/micro/go-micro/util/log"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -21,7 +21,9 @@ type tokenService struct {
 func (s *tokenService) SetToken(subject *Subject) (tokenStr string, err error) {
 	claims, err := s.createTokenClaims(subject)
 	if err != nil {
-		log.Errorf("set token fail, err: %v", err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("authsrv: 创建claims失败")
 		return
 	}
 

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"context"
-	"github.com/micro/go-micro/util/log"
+	log "github.com/sirupsen/logrus"
 	"project/shop/auth_srv/model/token"
 	authsrvproto "project/shop/auth_srv/proto"
 	"strconv"
@@ -13,7 +13,9 @@ type Service struct {
 
 // 设置token
 func (s *Service) SetTokenByUserId(ctx context.Context, req *authsrvproto.CSTokenSet, rsp *authsrvproto.SCTokenSet) error {
-	log.Debug("[SetToken] 收到创建token请求")
+	log.WithFields(log.Fields{
+		"CSTokenSet": *req,
+	}).Debug("authsrv:  收到设置token请求")
 
 	token, err := token.GetTokenService().SetToken(&token.Subject{
 		Id: strconv.FormatInt(req.UserId, 10),
@@ -24,7 +26,10 @@ func (s *Service) SetTokenByUserId(ctx context.Context, req *authsrvproto.CSToke
 			Detail: err.Error(),
 		}
 
-		log.Debugf("[SetToken] token生成失败，err：%s", err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("authsrv:  token生成失败")
+
 		return err
 	}
 
@@ -39,14 +44,20 @@ func (s *Service) SetTokenByUserId(ctx context.Context, req *authsrvproto.CSToke
 
 // 清除用户token
 func (s *Service) ClearTokenByUserId(ctx context.Context, req *authsrvproto.CSTokenClear, rsp *authsrvproto.SCTokenClear) error {
-	log.Debug("[ClearToken] 清除用户token")
+	log.WithFields(log.Fields{
+		"CSTokenClear": *req,
+	}).Debug("authsrv: 收到清除用户token请求")
+
 	err := token.GetTokenService().ClearToken(req.Token)
 	if err != nil {
 		rsp.Error = &authsrvproto.Error{
 			Detail: err.Error(),
 		}
 
-		log.Debugf("[ClearToken] 清除用户token失败，err：%s", err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("authsrv:  清除用户token失败")
+
 		return err
 	}
 
@@ -59,7 +70,10 @@ func (s *Service) ClearTokenByUserId(ctx context.Context, req *authsrvproto.CSTo
 
 // 获取缓存的token
 func (s *Service) GetTokenByUserId(ctx context.Context, req *authsrvproto.CSTokenGet, rsp *authsrvproto.SCTokenGet) error {
-	log.Debug("[GetToken] 获取缓存的token，%d", req.UserId)
+	log.WithFields(log.Fields{
+		"CSTokenGet": *req,
+	}).Debug("authsrv: 收到获取缓存的token请求")
+
 	token, err := token.GetTokenService().GetToken(&token.Subject{
 		Id: strconv.FormatInt(req.UserId, 10),
 	})
@@ -68,7 +82,10 @@ func (s *Service) GetTokenByUserId(ctx context.Context, req *authsrvproto.CSToke
 			Detail: err.Error(),
 		}
 
-		log.Debugf("[GetToken] 获取缓存的token失败，err：%s", err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("authsrv:  获取缓存的token失败")
+
 		return err
 	}
 
