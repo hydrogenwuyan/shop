@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package shop.auth.srv;
+
+service User{
+    // 根据用户id查询用户数据
+    rpc QueryUserInfoByUserId(CSUserInfo) returns (SCUserInfo) {
+    }
+}
+
+// 用户数据
+message UserInfo{
+    int64 userId=1;
+    string name=2;
+    int64 createTime=3;
+}
+
+// 错误码
+message Error {
+    int32 code=1;
+    string detail=2;
+}
+
+// 用户信息请求
+message CSUserInfo{
+    int64 userId=1;
+    string password=2;
+}
+
+message SCUserInfo{
+    Error error=1;
+    UserInfo info=2;
+}

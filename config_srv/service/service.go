@@ -17,7 +17,10 @@ type ConfigService struct{}
 // 读取配置
 func (s ConfigService) Read(ctx context.Context, req *proto.ReadRequest) (resp *proto.ReadResponse, err error) {
 	appName := parsePath(req.Path)
-	resp.ChangeSet =  getConfig(appName)
+	fmt.Println("*********appName********", appName)
+	resp = &proto.ReadResponse{
+		ChangeSet: getConfig(appName),
+	}
 	return
 }
 
@@ -58,5 +61,3 @@ func parsePath(path string) (appName string) {
 
 	return paths[0]
 }
-
-

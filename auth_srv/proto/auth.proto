@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package shop.auth.srv;
+
+service User{
+    // 根据用户id请求设置token
+    rpc SetTokenByUserId(CSTokenSet) returns (SCTokenSet) {
+    }
+    // 根据用户id请求清理token
+    rpc ClearTokenByUserId(CSTokenClear) returns (SCTokenClear) {
+    }
+    // 根据用户id获取token
+    rpc GetTokenByUserId(CSTokenGet) returns (SCTokenGet) {
+    }
+}
+
+// 错误码
+message Error {
+    int32 code = 1;
+    string detail = 2;
+}
+
+// token设置
+message CSTokenSet{
+    int64 userId=1;
+}
+
+message SCTokenSet{
+    Error error=1;
+    int64 userId=2;
+    string token=3;
+}
+
+// token清理
+message CSTokenClear{
+    string token=1;
+}
+
+message SCTokenClear{
+    Error error=1;
+}
+
+// token获取
+message CSTokenGet{
+    int64 userId=1;
+}
+
+message SCTokenGet{
+    Error error=1;
+    int64 userId=2;
+    string token=3;
+}

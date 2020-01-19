@@ -16,7 +16,7 @@ var (
 
 func main() {
 	defer func() {
-		if r := recover();r != nil {
+		if r := recover(); r != nil {
 			log.Logf("config main panic, %v", r)
 		}
 	}()
@@ -37,7 +37,7 @@ func main() {
 		log.Fatalf("listen fail, err: %v", err)
 	}
 
-	log.Info("start config grpc server")
+	log.Info("start config grpc server...")
 
 	// 启动
 	err = grpcServer.Serve(l)
@@ -47,9 +47,9 @@ func main() {
 }
 
 // 加载并监听配置文件
-func loadAndWatchConfigFile() (err error){
+func loadAndWatchConfigFile() (err error) {
 	for _, app := range apps {
-		err = config.Load(file.NewSource(file.WithPath("./conf/"+app+".yml")))
+		err = config.Load(file.NewSource(file.WithPath("./conf/" + app + ".yml")))
 		if err != nil {
 			log.Fatalf("load config fail, err: %v", err)
 			return
