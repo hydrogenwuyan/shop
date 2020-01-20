@@ -11,7 +11,6 @@ USE shop;
 CREATE TABLE IF NOT EXISTS `t_user_entity` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
     `user_id` bigint NOT NULL COMMENT '用户id',
-    `user_name` varchar(50) NOT NULL COMMENT '用户名',
     `password` varchar(300) NOT NULL COMMENT '密码',
     `updateTime` bigint(20) DEFAULT 0 COMMENT "更新时间",
     `createTime` bigint(20) DEFAULT 0 COMMENT "创建时间",

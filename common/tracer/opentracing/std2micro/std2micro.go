@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	statusCode "github.com/micro-in-cn/tutorials/microservice-in-micro/part8/plugins/breaker/http"
 	"github.com/micro/go-micro/metadata"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	statusCode "project/shop/common/breaker/http"
 )
 
 // sf sampling frequency

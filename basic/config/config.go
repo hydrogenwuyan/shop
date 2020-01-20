@@ -65,7 +65,7 @@ func (c *configurator) init(ops Options) (err error) {
 			if err != nil {
 				log.WithFields(log.Fields{
 					"error": err,
-				}).Error("basic: 加载sources失败")
+				}).Error("basic: 监听配置变化失败")
 				return
 			}
 

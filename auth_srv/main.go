@@ -86,8 +86,8 @@ func registryOptions(ops *registry.Options) {
 // 初始化配置信息，监听配置变动
 func initConfig() (err error) {
 	source := grpc.NewSource(
-		grpc.WithAddress("127.0.0.1:9999"), // 配置地址
-		grpc.WithPath("conf"),              // 对应配置
+		grpc.WithAddress(basiccommon.EtcdAddr), // 配置地址
+		grpc.WithPath("conf"),                  // 对应配置
 	)
 
 	basic.Init(config.WithSource(source))

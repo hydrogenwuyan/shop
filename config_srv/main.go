@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"net"
 	"os"
+	basiccommon "project/shop/basic/common"
 	"project/shop/config_srv/service"
 )
 
@@ -37,7 +38,7 @@ func main() {
 	proto.RegisterSourceServer(grpcServer, new(service.ConfigService))
 
 	// 创建tcp链接
-	l, err := net.Listen("tcp", "127.0.0.1:9999")
+	l, err := net.Listen("tcp", basiccommon.EtcdAddr)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,

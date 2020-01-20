@@ -4,7 +4,8 @@ import (
 	"github.com/go-redis/redis"
 	log "github.com/sirupsen/logrus"
 	"project/shop/basic/config"
-	"project/shop/common"
+	"project/shop/common/jwt"
+	redis2 "project/shop/common/redis"
 	"sync"
 )
 
@@ -12,7 +13,7 @@ var (
 	once        sync.Once
 	s           *tokenService
 	redisClient *redis.Client
-	cfg         *common.Jwt
+	cfg         *jwt.Jwt
 )
 
 type TokenService interface {
@@ -28,13 +29,13 @@ func Init() (err error) {
 	once.Do(func() {
 		log.Info("token服务开始初始化...")
 
-		cfg = &common.Jwt{}
+		cfg = &jwt.Jwt{}
 		err := config.GetConfigurator().App("jwt", cfg)
 		if err != nil {
 			panic(err)
 		}
 
-		redisClient = common.Redis()
+		redisClient = redis2.Redis()
 		s = &tokenService{}
 	})
 
