@@ -1,0 +1,503 @@
+{
+  "info": {
+    "_postman_id": "c90d42be-f909-4dee-be15-98c58f4d4d25",
+    "name": "shop",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "购物系统-用户",
+      "item": [
+        {
+          "name": "用户登陆",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\"id\":1,\n\"pwd\":\"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/user/login",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ],
+              "query": [
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "用户登出",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/user/logout",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "user",
+                "logout"
+              ],
+              "query": [
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "添加图书",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\"type\":0,\n\"name\":\"Go programming language\",\n\"author\":\"Kernighan & Alan Donovan\",\n\"press\":\"www\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/v1/admin/add_book",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "v1",
+                "admin",
+                "add_book"
+              ],
+              "query": [
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "protocolProfileBehavior": {},
+      "_postman_isSubFolder": true
+    },
+    {
+      "name": "图书管理系统-图书",
+      "item": [
+        {
+          "name": "根据图书名查询图书",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}/v1/book/name?page=&limit=&name=",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "v1",
+                "book",
+                "name"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "2",
+                  "disabled": true
+                },
+                {
+                  "key": "name",
+                  "value": "Go"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "根据图书作者查询图书",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}/v1/book/name?page=&limit=&author=",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "v1",
+                "book",
+                "author"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "2",
+                  "disabled": true
+                },
+                {
+                  "key": "author",
+                  "value": "bee"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "根据图书类型查询图书",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}/v1/book/name?page=&limit=&type=",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "v1",
+                "book",
+                "name"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "2",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "protocolProfileBehavior": {},
+      "_postman_isSubFolder": true
+    },
+    {
+      "name": "图书管理系统-学生",
+      "item": [
+        {
+          "name": "注册",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\"user\":\"root\",\n\"password\":\"root\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/v1/student/register",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "v1",
+                "student",
+                "register"
+              ],
+              "query": [
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "登陆",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\"user\":\"root\",\n\"password\":\"root\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/v1/student/login",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "v1",
+                "student",
+                "login"
+              ],
+              "query": [
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "借书",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\"bookId\":\"1\",\n\"day\":1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/v1/student/borrow",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "v1",
+                "student",
+                "borrow"
+              ],
+              "query": [
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "还书",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "description": "web",
+                "key": "type",
+                "type": "text",
+                "value": "web"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\"bookId\":\"1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/v1/student/give_back",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "v1",
+                "student",
+                "give_back"
+              ],
+              "query": [
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "protocolProfileBehavior": {},
+      "_postman_isSubFolder": true
+    }
+  ]
+}
