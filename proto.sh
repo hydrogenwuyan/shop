@@ -1,1 +1,1 @@
-protoc --proto_path=. --go_out=. --micro_out=. auth_srv/proto/auth.proto
+protoc --proto_path=. --go_out=. --micro_out=. user_srv/proto/user.proto

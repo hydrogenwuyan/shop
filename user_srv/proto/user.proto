@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package shop.auth.srv;
+package shop.user.srv;
 
 service User{
     // 根据用户id查询用户数据
@@ -11,8 +11,7 @@ service User{
 // 用户数据
 message UserInfo{
     int64 userId=1;
-    string name=2;
-    int64 createTime=3;
+    int64 createTime=2;
 }
 
 // 错误码

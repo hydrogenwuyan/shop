@@ -9,7 +9,6 @@ import (
 	authsrvproto "project/shop/auth_srv/proto"
 	basiccommon "project/shop/basic/common"
 	usersrvproto "project/shop/user_srv/proto"
-	"strconv"
 	"time"
 )
 
@@ -25,11 +24,16 @@ func Init() {
 	authsrvClient = authsrvproto.NewUserService("shop.auth.srv", cl)
 }
 
+type ReqMsg struct {
+	Id  int64  `json:"id"`
+	Pwd string `json:"pwd"`
+}
+
 // 用户登陆
 func Login(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	// 验证post方法
-	if r.Method != "post" {
+	if r.Method != "POST" {
 		log.WithFields(log.Fields{
 			"method": r.Method,
 		}).Error("userweb: 不是post方法")
@@ -37,17 +41,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIdStr := r.Form.Get("id")
-	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+	reqMsg := &ReqMsg{}
+	err := json.NewDecoder(r.Body).Decode(reqMsg)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"userIdStr": userIdStr,
-			"error":     err,
-		}).Error("userweb: userId解析失败")
-		http.Error(w, "userId解析失败", 400)
+		log.Fatalf("userweb: body json反序列化失败, error: %v", err)
+		http.Error(w, "body json反序列化失败", 400)
 		return
 	}
-	pwd := r.Form.Get("pwd")
+
+	userId := reqMsg.Id
+	pwd := reqMsg.Pwd
 
 	// 验证用户是否存在
 	scUserInfo, err := usersrvClient.QueryUserInfoByUserId(ctx, &usersrvproto.CSUserInfo{
@@ -119,7 +122,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Logout(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	// 验证post方法
-	if r.Method != "post" {
+	if r.Method != "POST" {
 		log.WithFields(log.Fields{
 			"method": r.Method,
 		}).Error("userweb: 不是post方法")
