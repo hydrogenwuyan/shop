@@ -29,9 +29,9 @@ func (s ConfigService) Read(ctx context.Context, req *proto.ReadRequest) (resp *
 
 // 监听配置变动，发送变动的配置给各个服务
 func (s ConfigService) Watch(req *proto.WatchRequest, server proto.Source_WatchServer) (err error) {
-	log.WithFields(log.Fields{
-		"watchRequest": *req,
-	}).Debug("configsrv: 请求配置信息")
+	//log.WithFields(log.Fields{
+	//	"watchRequest": *req,
+	//}).Debug("configsrv: 请求配置信息")
 
 	appName := parsePath(req.Path)
 	resp := &proto.WatchResponse{

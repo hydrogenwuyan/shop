@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package shop.order.srv;
+
+service Order{
+    // 根据用户id查询用户数据
+    rpc QueryUserInfoByUserId(CSUserInfo) returns (SCUserInfo) {
+    }
+}
+
+// 用户数据
+message UserInfo{
+    int64 userId=1;
+    int64 createTime=2;
+}
+
+// 错误码
+message Error {
+    int32 code=1;
+    string detail=2;
+}
+
+// 用户购买商品请求
+message CSShopBuy{
+    int64 shopId=1;
+    string =2;
+}
+
+message SCUserInfo{
+    Error error=1;
+    UserInfo info=2;
+}
