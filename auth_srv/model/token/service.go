@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	log "github.com/sirupsen/logrus"
+	"strconv"
 	"time"
 )
 
@@ -70,8 +71,19 @@ func (s *tokenService) ClearToken(token string) (err error) {
 	return
 }
 
-func (s *tokenService) GetToken(subject *Subject) (token string, err error) {
-	return s.getTokenToCache(subject)
+func (s *tokenService) GetUserId(token string) (userId int64, err error) {
+	claims, err := s.parseToken(token)
+	if err != nil {
+		err = fmt.Errorf("[DelUserAccessToken] 错误的token，err: %s", err)
+		return
+	}
+	userId, err = strconv.ParseInt(claims.Id, 10, 64)
+	if err != nil {
+		log.Errorf("authsrv: 解析失败, err: %v", err)
+		return
+	}
+
+	return
 }
 
 // 生成 Claims

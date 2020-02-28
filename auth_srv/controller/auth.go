@@ -69,14 +69,12 @@ func (s *Service) ClearTokenByUserId(ctx context.Context, req *authsrvproto.CSTo
 }
 
 // 获取缓存的token
-func (s *Service) GetTokenByUserId(ctx context.Context, req *authsrvproto.CSTokenGet, rsp *authsrvproto.SCTokenGet) error {
+func (s *Service) GetUserIdByToken(ctx context.Context, req *authsrvproto.CSTokenGet, rsp *authsrvproto.SCTokenGet) error {
 	log.WithFields(log.Fields{
 		"CSTokenGet": *req,
 	}).Debug("authsrv: 收到获取缓存的token请求")
 
-	token, err := token.GetTokenService().GetToken(&token.Subject{
-		Id: strconv.FormatInt(req.UserId, 10),
-	})
+	userId, err := token.GetTokenService().GetUserId(req.Token)
 	if err != nil {
 		rsp.Error = &authsrvproto.Error{
 			Detail: err.Error(),
@@ -84,7 +82,7 @@ func (s *Service) GetTokenByUserId(ctx context.Context, req *authsrvproto.CSToke
 
 		log.WithFields(log.Fields{
 			"error": err,
-		}).Error("authsrv:  获取缓存的token失败")
+		}).Error("authsrv:  获取缓存的userId失败")
 
 		return err
 	}
@@ -92,7 +90,7 @@ func (s *Service) GetTokenByUserId(ctx context.Context, req *authsrvproto.CSToke
 	rsp.Error = &authsrvproto.Error{
 		Code: 200,
 	}
-	rsp.Token = token
+	rsp.UserId = userId
 
 	return nil
 }

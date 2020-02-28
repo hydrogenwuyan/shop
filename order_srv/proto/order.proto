@@ -3,15 +3,23 @@ syntax = "proto3";
 package shop.order.srv;
 
 service Order{
-    // 根据用户id查询用户数据
-    rpc QueryUserInfoByUserId(CSUserInfo) returns (SCUserInfo) {
+    // 生成订单
+    rpc CreateOrder(CSOrderCreate) returns (SCOrderCreate) {
+    }
+    // 确认订单
+    rpc ConfirmOrder(CSOrderConfirm) returns (SCOrderConfirm) {
     }
 }
 
-// 用户数据
-message UserInfo{
-    int64 userId=1;
-    int64 createTime=2;
+// 订单数据
+message OrderInfo{
+    int64 orderId=1;
+    int64 shopId=2;
+    int64 num=3;
+    int64 userId=4;
+    int32 status=5;
+    int64 money=6;
+    int64 createTime=7;
 }
 
 // 错误码
@@ -20,13 +28,24 @@ message Error {
     string detail=2;
 }
 
-// 用户购买商品请求
-message CSShopBuy{
+// 生成订单请求
+message CSOrderCreate{
     int64 shopId=1;
-    string =2;
+    int64 userId=2;
+    int64 num=3;
 }
 
-message SCUserInfo{
+message SCOrderCreate{
     Error error=1;
-    UserInfo info=2;
+    OrderInfo info=2;
+}
+
+// 确认订单请求
+message CSOrderConfirm{
+    int64 orderId=1;
+}
+
+message SCOrderConfirm{
+    Error error=1;
+    OrderInfo info=2;
 }

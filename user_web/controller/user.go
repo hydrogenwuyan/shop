@@ -14,14 +14,14 @@ import (
 
 var (
 	usersrvClient usersrvproto.UserService // 用户服务client
-	authsrvClient authsrvproto.UserService // token服务client
+	authsrvClient authsrvproto.AuthService // token服务client
 )
 
 // 初始化
 func Init() {
 	cl := hystrix.NewClientWrapper()(client.DefaultClient)
 	usersrvClient = usersrvproto.NewUserService("shop.user.srv", cl)
-	authsrvClient = authsrvproto.NewUserService("shop.auth.srv", cl)
+	authsrvClient = authsrvproto.NewAuthService("shop.auth.srv", cl)
 }
 
 type ReqMsg struct {

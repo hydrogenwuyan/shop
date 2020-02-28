@@ -11,21 +11,21 @@ import (
 	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"os"
-	authsrvcontroller "project/shop/auth_srv/controller"
-	authsrvmodel "project/shop/auth_srv/model"
-	authsrvproto "project/shop/auth_srv/proto"
 	"project/shop/basic"
 	basiccommon "project/shop/basic/common"
 	"project/shop/basic/config"
-	tracer "project/shop/common/tracer/jaeger"
+	ordersrvcontroller "project/shop/user_srv/controller"
+	ordersrvmodel "project/shop/user_srv/model"
+	ordersrvproto "project/shop/user_srv/proto"
+	"time"
 )
 
 var (
-	appName = "auth_srv"
-	cfg     = &authCfg{}
+	appName = "order_srv"
+	cfg     = &orderCfg{}
 )
 
-type authCfg struct {
+type orderCfg struct {
 	basiccommon.AppCfg
 }
 
@@ -33,46 +33,36 @@ func main() {
 	initLog()
 	initConfig()
 
-	micReg := etcd.NewRegistry(registryOptions)
-
-	t, io, err := tracer.NewTracer(cfg.Name, "")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer io.Close()
-	opentracing.SetGlobalTracer(t)
+	etcdReg := etcd.NewRegistry(registryOptions)
 
 	// 新建服务
 	service := micro.NewService(
-		micro.Name(cfg.Name),   // 	服务名字
-		micro.Registry(micReg), // etcd配置信息
-		micro.Version(cfg.Version),
-		micro.Address(cfg.Addr()), // 服务地址
+		micro.Name(cfg.Name),
+		micro.RegisterTTL(time.Second*15),
+		micro.RegisterInterval(time.Second*10),
+		micro.Registry(etcdReg),
+		micro.Version("latest"),
 		micro.WrapHandler(openTrace.NewHandlerWrapper(opentracing.GlobalTracer())),
 	)
 
-	// 服务器初始化
+	// 服务初始化
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			// 初始化model
-			authsrvmodel.Init()
+			// 初始化model层
+			ordersrvmodel.Init()
 		}),
 	)
 
 	// 注册服务
-	authsrvproto.RegisterAuthHandler(service.Server(), new(authsrvcontroller.Service))
-
-	log.Info("authsrv: 启动authsrv服务...")
+	ordersrvproto.RegisterUserHandler(service.Server(), new(ordersrvcontroller.Service))
 
 	// 启动服务
 	if err := service.Run(); err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Fatal("authsrv:  tcp accept错误")
+		log.Fatal(err)
 	}
-
 }
 
+// 读取etcd配置信息
 func registryOptions(ops *registry.Options) {
 	etcdCfg := &basiccommon.Etcd{}
 	err := config.GetConfigurator().App("etcd", etcdCfg)
@@ -83,11 +73,11 @@ func registryOptions(ops *registry.Options) {
 	ops.Addrs = []string{fmt.Sprintf("%s:%d", etcdCfg.Host, etcdCfg.Port)}
 }
 
-// 初始化配置信息，监听配置变动
+// 读取配置信息
 func initConfig() (err error) {
 	source := grpc.NewSource(
-		grpc.WithAddress(basiccommon.EtcdAddr), // 配置地址
-		grpc.WithPath("conf"),                  // 对应配置
+		grpc.WithAddress(basiccommon.EtcdAddr),
+		grpc.WithPath("conf"),
 	)
 
 	basic.Init(config.WithSource(source))
@@ -97,13 +87,13 @@ func initConfig() (err error) {
 		log.WithFields(log.Fields{
 			"appName": appName,
 			"error":   err,
-		}).Fatal("authsrv: 初始化配置失败")
+		}).Fatal("ordersrv: 初始化配置失败")
 		return
 	}
 
 	log.WithFields(log.Fields{
 		"cfg": *cfg,
-	}).Info("authsrv: 配置信息")
+	}).Info("ordersrv: 配置信息")
 
 	return
 }

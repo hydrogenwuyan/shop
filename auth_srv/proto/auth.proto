@@ -2,15 +2,15 @@ syntax = "proto3";
 
 package shop.auth.srv;
 
-service User{
+service Auth{
     // 根据用户id请求设置token
     rpc SetTokenByUserId(CSTokenSet) returns (SCTokenSet) {
     }
     // 根据用户id请求清理token
     rpc ClearTokenByUserId(CSTokenClear) returns (SCTokenClear) {
     }
-    // 根据用户id获取token
-    rpc GetTokenByUserId(CSTokenGet) returns (SCTokenGet) {
+    // 根据token获取用户id
+    rpc GetUserIdByToken(CSUserIdGet) returns (SCUserIdGet) {
     }
 }
 
@@ -41,12 +41,11 @@ message SCTokenClear{
 }
 
 // token获取
-message CSTokenGet{
-    int64 userId=1;
+message CSUserIdGet{
+    string token=1;
 }
 
-message SCTokenGet{
+message SCUserIdGet{
     Error error=1;
     int64 userId=2;
-    string token=3;
 }

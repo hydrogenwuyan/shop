@@ -31,37 +31,37 @@ var _ context.Context
 var _ client.Option
 var _ server.Option
 
-// Client API for User service
+// Client API for Auth service
 
-type UserService interface {
+type AuthService interface {
 	// 根据用户id请求设置token
 	SetTokenByUserId(ctx context.Context, in *CSTokenSet, opts ...client.CallOption) (*SCTokenSet, error)
 	// 根据用户id请求清理token
 	ClearTokenByUserId(ctx context.Context, in *CSTokenClear, opts ...client.CallOption) (*SCTokenClear, error)
-	// 根据用户id获取token
-	GetTokenByUserId(ctx context.Context, in *CSTokenGet, opts ...client.CallOption) (*SCTokenGet, error)
+	// 根据token获取用户id
+	GetUserIdByToken(ctx context.Context, in *CSUserIdGet, opts ...client.CallOption) (*SCUserIdGet, error)
 }
 
-type userService struct {
+type authService struct {
 	c    client.Client
 	name string
 }
 
-func NewUserService(name string, c client.Client) UserService {
+func NewAuthService(name string, c client.Client) AuthService {
 	if c == nil {
 		c = client.NewClient()
 	}
 	if len(name) == 0 {
 		name = "shop.auth.srv"
 	}
-	return &userService{
+	return &authService{
 		c:    c,
 		name: name,
 	}
 }
 
-func (c *userService) SetTokenByUserId(ctx context.Context, in *CSTokenSet, opts ...client.CallOption) (*SCTokenSet, error) {
-	req := c.c.NewRequest(c.name, "User.SetTokenByUserId", in)
+func (c *authService) SetTokenByUserId(ctx context.Context, in *CSTokenSet, opts ...client.CallOption) (*SCTokenSet, error) {
+	req := c.c.NewRequest(c.name, "Auth.SetTokenByUserId", in)
 	out := new(SCTokenSet)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -70,8 +70,8 @@ func (c *userService) SetTokenByUserId(ctx context.Context, in *CSTokenSet, opts
 	return out, nil
 }
 
-func (c *userService) ClearTokenByUserId(ctx context.Context, in *CSTokenClear, opts ...client.CallOption) (*SCTokenClear, error) {
-	req := c.c.NewRequest(c.name, "User.ClearTokenByUserId", in)
+func (c *authService) ClearTokenByUserId(ctx context.Context, in *CSTokenClear, opts ...client.CallOption) (*SCTokenClear, error) {
+	req := c.c.NewRequest(c.name, "Auth.ClearTokenByUserId", in)
 	out := new(SCTokenClear)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -80,9 +80,9 @@ func (c *userService) ClearTokenByUserId(ctx context.Context, in *CSTokenClear, 
 	return out, nil
 }
 
-func (c *userService) GetTokenByUserId(ctx context.Context, in *CSTokenGet, opts ...client.CallOption) (*SCTokenGet, error) {
-	req := c.c.NewRequest(c.name, "User.GetTokenByUserId", in)
-	out := new(SCTokenGet)
+func (c *authService) GetUserIdByToken(ctx context.Context, in *CSUserIdGet, opts ...client.CallOption) (*SCUserIdGet, error) {
+	req := c.c.NewRequest(c.name, "Auth.GetUserIdByToken", in)
+	out := new(SCUserIdGet)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -90,42 +90,42 @@ func (c *userService) GetTokenByUserId(ctx context.Context, in *CSTokenGet, opts
 	return out, nil
 }
 
-// Server API for User service
+// Server API for Auth service
 
-type UserHandler interface {
+type AuthHandler interface {
 	// 根据用户id请求设置token
 	SetTokenByUserId(context.Context, *CSTokenSet, *SCTokenSet) error
 	// 根据用户id请求清理token
 	ClearTokenByUserId(context.Context, *CSTokenClear, *SCTokenClear) error
-	// 根据用户id获取token
-	GetTokenByUserId(context.Context, *CSTokenGet, *SCTokenGet) error
+	// 根据token获取用户id
+	GetUserIdByToken(context.Context, *CSUserIdGet, *SCUserIdGet) error
 }
 
-func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
-	type user interface {
+func RegisterAuthHandler(s server.Server, hdlr AuthHandler, opts ...server.HandlerOption) error {
+	type auth interface {
 		SetTokenByUserId(ctx context.Context, in *CSTokenSet, out *SCTokenSet) error
 		ClearTokenByUserId(ctx context.Context, in *CSTokenClear, out *SCTokenClear) error
-		GetTokenByUserId(ctx context.Context, in *CSTokenGet, out *SCTokenGet) error
+		GetUserIdByToken(ctx context.Context, in *CSUserIdGet, out *SCUserIdGet) error
 	}
-	type User struct {
-		user
+	type Auth struct {
+		auth
 	}
-	h := &userHandler{hdlr}
-	return s.Handle(s.NewHandler(&User{h}, opts...))
+	h := &authHandler{hdlr}
+	return s.Handle(s.NewHandler(&Auth{h}, opts...))
 }
 
-type userHandler struct {
-	UserHandler
+type authHandler struct {
+	AuthHandler
 }
 
-func (h *userHandler) SetTokenByUserId(ctx context.Context, in *CSTokenSet, out *SCTokenSet) error {
-	return h.UserHandler.SetTokenByUserId(ctx, in, out)
+func (h *authHandler) SetTokenByUserId(ctx context.Context, in *CSTokenSet, out *SCTokenSet) error {
+	return h.AuthHandler.SetTokenByUserId(ctx, in, out)
 }
 
-func (h *userHandler) ClearTokenByUserId(ctx context.Context, in *CSTokenClear, out *SCTokenClear) error {
-	return h.UserHandler.ClearTokenByUserId(ctx, in, out)
+func (h *authHandler) ClearTokenByUserId(ctx context.Context, in *CSTokenClear, out *SCTokenClear) error {
+	return h.AuthHandler.ClearTokenByUserId(ctx, in, out)
 }
 
-func (h *userHandler) GetTokenByUserId(ctx context.Context, in *CSTokenGet, out *SCTokenGet) error {
-	return h.UserHandler.GetTokenByUserId(ctx, in, out)
+func (h *authHandler) GetUserIdByToken(ctx context.Context, in *CSUserIdGet, out *SCUserIdGet) error {
+	return h.AuthHandler.GetUserIdByToken(ctx, in, out)
 }

@@ -2,24 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/afex/hystrix-go/hystrix"
 	"github.com/micro/cli"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/etcd"
+	"github.com/micro/go-micro/web"
 	"github.com/micro/go-plugins/config/source/grpc"
-	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
-	"net"
 	"net/http"
 	"os"
 	"project/shop/basic"
-	"project/shop/common/breaker"
-	"project/shop/common/tracer/opentracing/std2micro"
-
-	"github.com/micro/go-micro/web"
 	basiccommon "project/shop/basic/common"
 	"project/shop/basic/config"
-	tracer "project/shop/common/tracer/jaeger"
 	"project/shop/user_web/controller"
 	"time"
 )
@@ -38,13 +31,6 @@ func main() {
 	initConfig()
 
 	etcdReg := etcd.NewRegistry(registryOptions)
-
-	t, io, err := tracer.NewTracer(cfg.Name, "")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer io.Close()
-	opentracing.SetGlobalTracer(t)
 
 	// 新建服务
 	service := web.NewService(
@@ -67,17 +53,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//设置采样率
-	std2micro.SetSamplingFrequency(50)
-
 	// 注册路由
-	service.Handle("/user/login", std2micro.TracerWrapper(breaker.BreakerWrapper(http.HandlerFunc(controller.Login))))
-	service.Handle("/user/logout", std2micro.TracerWrapper(http.HandlerFunc(controller.Logout)))
-
-	hystrixStreamHandler := hystrix.NewStreamHandler()
-	hystrixStreamHandler.Start()
-
-	go http.ListenAndServe(net.JoinHostPort("", "81"), hystrixStreamHandler)
+	service.Handle("/user/login", http.HandlerFunc(controller.Login))
+	service.Handle("/user/logout", http.HandlerFunc(controller.Logout))
 
 	// 运行服务
 	if err := service.Run(); err != nil {

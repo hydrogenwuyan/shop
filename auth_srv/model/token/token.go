@@ -21,8 +21,8 @@ type TokenService interface {
 	SetToken(subject *Subject) (token string, err error)
 	// 清理token
 	ClearToken(token string) (err error)
-	// 获取token
-	GetToken(subject *Subject) (token string, err error)
+	// 获取userId
+	GetUserId(token string) (userId int64, err error)
 }
 
 func Init() (err error) {

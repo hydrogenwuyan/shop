@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package shop.inventory.srv;
+
+service Inventory{
+    // 查询库存数量
+    rpc QueryInventoryInfoByShopId(CSInventoryInfo) returns (SCInventoryInfo) {
+    }
+    // 购买商品
+    rpc InventoryBuy(CSInventoryBuy) returns (SCInventoryBuy) {
+    }
+}
+
+// 库存数据
+message InventoryInfo{
+    int64 shopId=1;
+    int64 num=2;
+    int64 version=3;
+    int64 createTime=4;
+    int64 money=5;
+}
+
+// 错误码
+message Error {
+    int32 code=1;
+    string detail=2;
+}
+
+// 查询库存信息
+message CSInventoryInfo{
+    int64 shopId=1;
+}
+
+message SCInventoryInfo{
+    Error error=1;
+    InventoryInfo info=2;
+}
+
+// 购买商品
+message CSInventoryBuy{
+    int64 shopId=1;
+    int64 num=2;
+}
+
+message SCInventoryBuy{
+    Error error=1;
+    int64 shopId=2;
+    int64 num=3;
+    // 单价
+    int64 money=4;
+}

@@ -14,7 +14,6 @@ import (
 	"project/shop/basic"
 	basiccommon "project/shop/basic/common"
 	"project/shop/basic/config"
-	tracer "project/shop/common/tracer/jaeger"
 	usersrvcontroller "project/shop/user_srv/controller"
 	usersrvmodel "project/shop/user_srv/model"
 	usersrvproto "project/shop/user_srv/proto"
@@ -35,13 +34,6 @@ func main() {
 	initConfig()
 
 	etcdReg := etcd.NewRegistry(registryOptions)
-
-	t, io, err := tracer.NewTracer(cfg.Name, "")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer io.Close()
-	opentracing.SetGlobalTracer(t)
 
 	// 新建服务
 	service := micro.NewService(
