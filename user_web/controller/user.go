@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"github.com/micro/go-micro/client"
-	"github.com/micro/go-plugins/wrapper/breaker/hystrix"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	authsrvproto "project/shop/auth_srv/proto"
@@ -19,7 +18,7 @@ var (
 
 // 初始化
 func Init() {
-	cl := hystrix.NewClientWrapper()(client.DefaultClient)
+	cl := client.DefaultClient
 	usersrvClient = usersrvproto.NewUserService("shop.user.srv", cl)
 	authsrvClient = authsrvproto.NewAuthService("shop.auth.srv", cl)
 }

@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"github.com/micro/go-micro/client"
-	"github.com/micro/go-plugins/wrapper/breaker/hystrix"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	authsrvproto "project/shop/auth_srv/proto"
@@ -20,15 +19,10 @@ var (
 
 // 初始化
 func Init() {
-	cl := hystrix.NewClientWrapper()(client.DefaultClient)
+	cl := client.DefaultClient
 	ordersrvClient = ordersrvproto.NewOrderService("shop.order.srv", cl)
 	inventorysrvClient = inventorysrvproto.NewInventoryService("shop.inventory.srv", cl)
 	authsrvClient = authsrvproto.NewAuthService("shop.auth.srv", cl)
-}
-
-type ReqMsg struct {
-	ShopId int64 `json:"shopId"`
-	Num    int64 `json:"num"`
 }
 
 // 购买商品
@@ -38,6 +32,11 @@ func ShopBuy(w http.ResponseWriter, r *http.Request) {
 	flag, errorCode, userId := checkoutToken(r)
 	if !flag {
 		http.Error(w, errorCode, 400)
+	}
+
+	type ReqMsg struct {
+		ShopId int64 `json:"shopId"`
+		Num    int64 `json:"num"`
 	}
 
 	reqMsg := &ReqMsg{}
@@ -81,6 +80,61 @@ func ShopBuy(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{
 			"userId": userId,
 			"error":  err,
+		}).Error("orderweb: json编码失败")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+}
+
+// 支付订单
+func OrderPay(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	flag, errorCode, userId := checkoutToken(r)
+	if !flag {
+		http.Error(w, errorCode, 400)
+	}
+
+	type ReqMsg struct {
+		OrderId int64 `json:"orderId"`
+	}
+
+	reqMsg := &ReqMsg{}
+	err := json.NewDecoder(r.Body).Decode(reqMsg)
+	if err != nil {
+		log.Errorf("orderweb: body json反序列化失败, error: %v", err)
+		http.Error(w, "body json反序列化失败", 400)
+		return
+	}
+
+	orderId := reqMsg.OrderId
+	// 生成预订单
+	scOrderConfirm, err := ordersrvClient.ConfirmOrder(ctx, &ordersrvproto.CSOrderConfirm{
+		OrderId: orderId,
+	})
+	if err != nil || scOrderConfirm.Error.Code != 200 {
+		log.WithFields(log.Fields{
+			"userId":  userId,
+			"orderId": orderId,
+			"detail":  scOrderConfirm.Error.Detail,
+			"error":   err,
+		}).Error("orderweb: 支付订单失败")
+		http.Error(w, "支付订单失败", 400)
+		return
+	}
+
+	// 返回结果
+	response := map[string]interface{}{
+		"code":  200,
+		"order": scOrderConfirm.Info,
+	}
+
+	// 返回JSON结构
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.WithFields(log.Fields{
+			"orderId": orderId,
+			"error":   err,
 		}).Error("orderweb: json编码失败")
 		http.Error(w, err.Error(), 500)
 		return

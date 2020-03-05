@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"github.com/micro/go-micro/client"
-	"github.com/micro/go-plugins/wrapper/breaker/hystrix"
 	log "github.com/sirupsen/logrus"
 	inventorysrvproto "project/shop/inventory_srv/proto"
 	ordersrvmodel "project/shop/order_srv/model"
@@ -18,7 +17,7 @@ var (
 
 // 初始化
 func Init() {
-	cl := hystrix.NewClientWrapper()(client.DefaultClient)
+	cl := client.DefaultClient
 	ordersrvClient = ordersrvproto.NewOrderService("shop.order.srv", cl)
 	inventorysrvClient = inventorysrvproto.NewInventoryService("shop.inventory.srv", cl)
 }
@@ -78,5 +77,21 @@ func (s *Service) CreateOrder(ctx context.Context, request *ordersrvproto.CSOrde
 
 // 确认订单
 func (s *Service) ConfirmOrder(ctx context.Context, request *ordersrvproto.CSOrderConfirm, response *ordersrvproto.SCOrderConfirm) (err error) {
+	orderId := request.OrderId
+	order, err := ordersrvmodel.GetOrderService().QueryOrderInfoByOrderId(orderId)
+	if err != nil || order.Id == 0 {
+		log.Errorf("ordersrv: 数据库错误")
+		return
+	}
+
+	order.Status = ordersrvmodel.OrderStatusPay
+	order.UpdateTime = time.Now().Unix()
+
+	err = ordersrvmodel.GetOrderService().Update(order)
+	if err != nil {
+		log.Errorf("ordersrv: 数据库错误")
+		return
+	}
+
 	return
 }

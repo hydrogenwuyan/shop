@@ -56,6 +56,7 @@ func main() {
 
 	// 注册路由
 	service.Handle("/order/buy", http.HandlerFunc(controller.ShopBuy))
+	service.Handle("/order/pay", http.HandlerFunc(controller.OrderPay))
 
 	// 运行服务
 	if err := service.Run(); err != nil {
