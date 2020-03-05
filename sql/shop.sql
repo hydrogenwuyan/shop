@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `t_inventory_entity` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
     `shopId` bigint NOT NULL COMMENT '商品id',
     `num` bigint NOT NULL COMMENT '商品数量',
+    `money` bigint NOT NULL COMMENT '商品单价 单位:分',
     `version` bigint NOT NULL COMMENT '版本号',
     `updateTime` bigint(20) DEFAULT 0 COMMENT "更新时间",
     `createTime` bigint(20) DEFAULT 0 COMMENT "创建时间",

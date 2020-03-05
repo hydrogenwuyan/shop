@@ -64,8 +64,8 @@ func ShopBuy(w http.ResponseWriter, r *http.Request) {
 			"num":    num,
 			"detail": scOrderCreate.Error.Detail,
 			"error":  err,
-		}).Error("orderweb: CreateOrder失败")
-		http.Error(w, "body json反序列化失败", 400)
+		}).Error("orderweb: 创建订单失败")
+		http.Error(w, "创建订单失败", 400)
 		return
 	}
 

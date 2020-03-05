@@ -13,10 +13,6 @@ type Service struct {
 
 // 设置token
 func (s *Service) SetTokenByUserId(ctx context.Context, req *authsrvproto.CSTokenSet, rsp *authsrvproto.SCTokenSet) error {
-	log.WithFields(log.Fields{
-		"CSTokenSet": *req,
-	}).Debug("authsrv:  收到设置token请求")
-
 	token, err := token.GetTokenService().SetToken(&token.Subject{
 		Id: strconv.FormatInt(req.UserId, 10),
 	})
@@ -69,7 +65,7 @@ func (s *Service) ClearTokenByUserId(ctx context.Context, req *authsrvproto.CSTo
 }
 
 // 获取缓存的token
-func (s *Service) GetUserIdByToken(ctx context.Context, req *authsrvproto.CSTokenGet, rsp *authsrvproto.SCTokenGet) error {
+func (s *Service) GetUserIdByToken(ctx context.Context, req *authsrvproto.CSUserIdGet, rsp *authsrvproto.SCUserIdGet) error {
 	log.WithFields(log.Fields{
 		"CSTokenGet": *req,
 	}).Debug("authsrv: 收到获取缓存的token请求")

@@ -7,8 +7,6 @@ import (
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/etcd"
 	"github.com/micro/go-plugins/config/source/grpc"
-	openTrace "github.com/micro/go-plugins/wrapper/trace/opentracing"
-	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"os"
 	authsrvcontroller "project/shop/auth_srv/controller"
@@ -17,7 +15,6 @@ import (
 	"project/shop/basic"
 	basiccommon "project/shop/basic/common"
 	"project/shop/basic/config"
-	tracer "project/shop/common/tracer/jaeger"
 )
 
 var (
@@ -35,20 +32,12 @@ func main() {
 
 	micReg := etcd.NewRegistry(registryOptions)
 
-	t, io, err := tracer.NewTracer(cfg.Name, "")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer io.Close()
-	opentracing.SetGlobalTracer(t)
-
 	// 新建服务
 	service := micro.NewService(
 		micro.Name(cfg.Name),   // 	服务名字
 		micro.Registry(micReg), // etcd配置信息
 		micro.Version(cfg.Version),
 		micro.Address(cfg.Addr()), // 服务地址
-		micro.WrapHandler(openTrace.NewHandlerWrapper(opentracing.GlobalTracer())),
 	)
 
 	// 服务器初始化

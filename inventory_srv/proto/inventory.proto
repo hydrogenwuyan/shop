@@ -9,6 +9,9 @@ service Inventory{
     // 购买商品
     rpc InventoryBuy(CSInventoryBuy) returns (SCInventoryBuy) {
     }
+    // 取消购买
+    rpc InventoryCancel(CSInventoryBuy) returns (SCInventoryBuy) {
+    }
 }
 
 // 库存数据
@@ -48,4 +51,14 @@ message SCInventoryBuy{
     int64 num=3;
     // 单价
     int64 money=4;
+}
+
+// 取消购买
+message CSInventoryCancel{
+    int64 shopId=1;
+    int64 num=2;
+}
+
+message SCInventoryCancel{
+    Error error=1;
 }

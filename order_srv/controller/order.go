@@ -2,13 +2,9 @@ package controller
 
 import (
 	"context"
-	"github.com/gogo/protobuf/test/required"
 	"github.com/micro/go-micro/client"
 	"github.com/micro/go-plugins/wrapper/breaker/hystrix"
 	log "github.com/sirupsen/logrus"
-	authsrvcontroller "project/shop/auth_srv/controller"
-	authsrvproto "project/shop/auth_srv/proto"
-	inventorysrvcontroller "project/shop/inventory_srv/controller"
 	inventorysrvproto "project/shop/inventory_srv/proto"
 	ordersrvmodel "project/shop/order_srv/model"
 	ordersrvproto "project/shop/order_srv/proto"
@@ -32,8 +28,13 @@ type Service struct {
 
 // 创建订单
 func (s *Service) CreateOrder(ctx context.Context, request *ordersrvproto.CSOrderCreate, response *ordersrvproto.SCOrderCreate) (err error) {
-	scInventoryInfo, err := inventorysrvClient.QueryInventoryInfoByShopId(ctx, &inventorysrvproto.CSInventoryInfo{
-		ShopId: request.ShopId,
+	shopId := request.ShopId
+	num := request.Num
+
+	// 锁定库存中的商品
+	scInventoryInfo, err := inventorysrvClient.InventoryBuy(ctx, &inventorysrvproto.CSInventoryBuy{
+		ShopId: shopId,
+		Num:    num,
 	})
 	if err != nil {
 		log.Errorf("ordersrv: rpc请求错误, error: %v", err)
@@ -42,14 +43,16 @@ func (s *Service) CreateOrder(ctx context.Context, request *ordersrvproto.CSOrde
 
 	if scInventoryInfo.Error.Code != 200 {
 		log.Errorf("ordersrv: 查询订单请求错误, error: %s", scInventoryInfo.Error.Detail)
+		return
 	}
 
 	// 创建订单
 	order := &ordersrvmodel.OrderEntity{
 		Status:     ordersrvmodel.OrderStatusCreate,
-		Money:      request.Money,
+		Money:      scInventoryInfo.Money,
+		Num:        scInventoryInfo.Num,
 		UserId:     request.UserId,
-		ShopId:     request.ShopId,
+		ShopId:     shopId,
 		CreateTime: time.Now().Unix(),
 	}
 	err = ordersrvmodel.GetOrderService().Update(order)
@@ -61,9 +64,10 @@ func (s *Service) CreateOrder(ctx context.Context, request *ordersrvproto.CSOrde
 	response.Info = &ordersrvproto.OrderInfo{
 		OrderId: 1,
 		ShopId:  request.ShopId,
+		Num:     scInventoryInfo.Num,
 		UserId:  request.UserId,
 		Status:  ordersrvmodel.OrderStatusCreate,
-		Money:   request.Money,
+		Money:   scInventoryInfo.Money,
 	}
 	response.Error = &ordersrvproto.Error{
 		Code: 200,

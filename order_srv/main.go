@@ -7,8 +7,6 @@ import (
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/etcd"
 	"github.com/micro/go-plugins/config/source/grpc"
-	openTrace "github.com/micro/go-plugins/wrapper/trace/opentracing"
-	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"project/shop/basic"
@@ -42,7 +40,6 @@ func main() {
 		micro.RegisterInterval(time.Second*10),
 		micro.Registry(etcdReg),
 		micro.Version("latest"),
-		micro.WrapHandler(openTrace.NewHandlerWrapper(opentracing.GlobalTracer())),
 	)
 
 	// 服务初始化

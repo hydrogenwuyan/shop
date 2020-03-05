@@ -6,6 +6,7 @@ type OrderEntity struct {
 	Status     int32 `gorm:"column:status"`
 	ShopId     int64 `gorm:"column:shopId"`
 	UserId     int64 `gorm:"column:userId"`
+	Num        int64 `gorm:"column:num"`
 	Money      int64 `gorm:"column:money"`
 	UpdateTime int64 `gorm:"column:updateTime"`
 	CreateTime int64 `gorm:"column:createTime"`

@@ -5,6 +5,7 @@ type InventoryEntity struct {
 	Id         int64 `gorm:"primary_key;column:id"`
 	ShopId     int64 `gorm:"column:shopId"`
 	Num        int64 `gorm:"column:num"`
+	Money      int64 `gorm:"column:money"`
 	Version    int64 `gorm:"column:version"`
 	UpdateTime int64 `gorm:"column:updateTime"`
 	CreateTime int64 `gorm:"column:createTime"`
