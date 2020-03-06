@@ -8,7 +8,7 @@
 | -------- | -------- |
 | 0      | config_srv     | 
 | 1      | auth_srv     | 
-| 2      | user pay inventory order  |
+| 2      | user inventory order  |
 
 ## 需求整理
 1.用户登陆

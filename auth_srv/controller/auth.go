@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"project/shop/auth_srv/model/token"
 	authsrvproto "project/shop/auth_srv/proto"
@@ -64,11 +65,11 @@ func (s *Service) ClearTokenByUserId(ctx context.Context, req *authsrvproto.CSTo
 	return nil
 }
 
-// 获取缓存的token
+// 请求uid
 func (s *Service) GetUserIdByToken(ctx context.Context, req *authsrvproto.CSUserIdGet, rsp *authsrvproto.SCUserIdGet) error {
 	log.WithFields(log.Fields{
 		"CSTokenGet": *req,
-	}).Debug("authsrv: 收到获取缓存的token请求")
+	}).Debug("authsrv: 请求uid")
 
 	userId, err := token.GetTokenService().GetUserId(req.Token)
 	if err != nil {
@@ -82,6 +83,8 @@ func (s *Service) GetUserIdByToken(ctx context.Context, req *authsrvproto.CSUser
 
 		return err
 	}
+
+	fmt.Println(userId)
 
 	rsp.Error = &authsrvproto.Error{
 		Code: 200,

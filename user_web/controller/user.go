@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/micro/go-micro/client"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -39,6 +40,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "不是post方法", 400)
 		return
 	}
+
+	fmt.Println("***********", r.RemoteAddr)
 
 	reqMsg := &ReqMsg{}
 	err := json.NewDecoder(r.Body).Decode(reqMsg)

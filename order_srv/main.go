@@ -12,9 +12,9 @@ import (
 	"project/shop/basic"
 	basiccommon "project/shop/basic/common"
 	"project/shop/basic/config"
-	ordersrvcontroller "project/shop/user_srv/controller"
-	ordersrvmodel "project/shop/user_srv/model"
-	ordersrvproto "project/shop/user_srv/proto"
+	ordersrvcontroller "project/shop/order_srv/controller"
+	ordersrvmodel "project/shop/order_srv/model"
+	ordersrvproto "project/shop/order_srv/proto"
 	"time"
 )
 
@@ -47,11 +47,12 @@ func main() {
 		micro.Action(func(c *cli.Context) {
 			// 初始化model层
 			ordersrvmodel.Init()
+			ordersrvcontroller.Init()
 		}),
 	)
 
 	// 注册服务
-	ordersrvproto.RegisterUserHandler(service.Server(), new(ordersrvcontroller.Service))
+	ordersrvproto.RegisterOrderHandler(service.Server(), new(ordersrvcontroller.Service))
 
 	// 启动服务
 	if err := service.Run(); err != nil {

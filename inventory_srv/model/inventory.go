@@ -82,7 +82,7 @@ func (s *inventoryService) UpdateAboutBuy(shopId int64, num int64) (money int64,
 		}
 
 		// 减少库存
-		sql := fmt.Sprintf("update %s set %s=%s-? where %s=? and %s=?", Inventory_TableName, Inventory_Num, Inventory_Num, Inventory_ShopId, Inventory_Version)
+		sql := fmt.Sprintf("update %s set %s=%s-?,%s=%s+1 where %s=? and %s=?", Inventory_TableName, Inventory_Num, Inventory_Num, Inventory_Version, Inventory_Version, Inventory_ShopId, Inventory_Version)
 		err2 = tx.Exec(sql, num, shopId, inventory.Version).Error
 		if err2 != nil {
 			if err2 == gorm.ErrRecordNotFound {

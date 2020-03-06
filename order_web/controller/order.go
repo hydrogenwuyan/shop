@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/micro/go-micro/client"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -32,6 +33,7 @@ func ShopBuy(w http.ResponseWriter, r *http.Request) {
 	flag, errorCode, userId := checkoutToken(r)
 	if !flag {
 		http.Error(w, errorCode, 400)
+		return
 	}
 
 	type ReqMsg struct {
@@ -160,6 +162,8 @@ func checkoutToken(r *http.Request) (flag bool, errorCode string, uid int64) {
 		errorCode = "获取cookie失败"
 		return
 	}
+
+	fmt.Println("**********", cookie)
 
 	// 验证token
 	scUserIdGet, err := authsrvClient.GetUserIdByToken(r.Context(), &authsrvproto.CSUserIdGet{

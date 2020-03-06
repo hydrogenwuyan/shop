@@ -10,7 +10,7 @@ service Inventory{
     rpc InventoryBuy(CSInventoryBuy) returns (SCInventoryBuy) {
     }
     // 取消购买
-    rpc InventoryCancel(CSInventoryBuy) returns (SCInventoryBuy) {
+    rpc InventoryCancel(CSInventoryCancel) returns (SCInventoryCancel) {
     }
 }
 

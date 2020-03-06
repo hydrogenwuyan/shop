@@ -34,3 +34,15 @@ conf:
     name: shop.auth.srv
     address: 127.0.0.1
     port: 12022
+  order_web:
+    name: shop.order.web
+    address: 127.0.0.1
+    port: 12023
+  order_srv:
+    name: shop.order.srv
+    address: 127.0.0.1
+    port: 12024
+  inventory_srv:
+    name: shop.inventory.srv
+    address: 127.0.0.1
+    port: 12025

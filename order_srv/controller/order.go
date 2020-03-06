@@ -7,19 +7,23 @@ import (
 	inventorysrvproto "project/shop/inventory_srv/proto"
 	ordersrvmodel "project/shop/order_srv/model"
 	ordersrvproto "project/shop/order_srv/proto"
+	"sync"
 	"time"
 )
 
 var (
+	once               sync.Once
 	inventorysrvClient inventorysrvproto.InventoryService // 库存服务client
 	ordersrvClient     ordersrvproto.OrderService         // 用户服务client
 )
 
 // 初始化
 func Init() {
-	cl := client.DefaultClient
-	ordersrvClient = ordersrvproto.NewOrderService("shop.order.srv", cl)
-	inventorysrvClient = inventorysrvproto.NewInventoryService("shop.inventory.srv", cl)
+	once.Do(func() {
+		cl := client.DefaultClient
+		ordersrvClient = ordersrvproto.NewOrderService("shop.order.srv", cl)
+		inventorysrvClient = inventorysrvproto.NewInventoryService("shop.inventory.srv", cl)
+	})
 }
 
 type Service struct {
@@ -44,6 +48,17 @@ func (s *Service) CreateOrder(ctx context.Context, request *ordersrvproto.CSOrde
 		log.Errorf("ordersrv: 查询订单请求错误, error: %s", scInventoryInfo.Error.Detail)
 		return
 	}
+
+	defer func() {
+		if err != nil {
+			// 出错回滚
+			_, err = inventorysrvClient.InventoryBuy(ctx, &inventorysrvproto.CSInventoryBuy{
+				ShopId: shopId,
+				Num:    -num,
+			})
+			log.Errorf("ordersrv: 回滚失败, error: %v", err)
+		}
+	}()
 
 	// 创建订单
 	order := &ordersrvmodel.OrderEntity{

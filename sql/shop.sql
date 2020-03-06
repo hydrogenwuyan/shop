@@ -35,13 +35,17 @@ CREATE TABLE IF NOT EXISTS `t_inventory_entity` (
 ) ENGINE=InnoDB COMMENT='inventory entity' DEFAULT CHARSET=utf8;
 CREATE UNIQUE INDEX `t_inventory_entity_shop_id` ON `t_inventory_entity` (`shopId`);
 
+insert t_inventory_entity values(1,1,100,10,1,0,0,0);
+insert t_inventory_entity values(2,2,100,10,1,0,0,0);
+
 -- --------------------------------------------------
 --  Table Structure for `t_order_entity`
 -- --------------------------------------------------
 CREATE TABLE IF NOT EXISTS `t_order_entity` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
     `status` int(11) NOT NULL COMMENT '订单状态',
-    `shopId` bigint NOT NULL COMMENT '商品id'
+    `shopId` bigint NOT NULL COMMENT '商品id',
+    `num` bigint NOT NULL COMMENT '商品数量',
     `userId` bigint NOT NULL COMMENT '用户id',
     `money` bigint NOT NULL COMMENT '订单金额',
     `updateTime` bigint(20) DEFAULT 0 COMMENT "更新时间",

@@ -59,15 +59,6 @@ func (s *tokenService) ClearToken(token string) (err error) {
 		return fmt.Errorf("[DelUserAccessToken] 清除用户token，err: %s", err)
 	}
 
-	// 广播删除
-	//msg := &broker.Message{
-	//	Body: []byte(claims.Subject),
-	//}
-	//if err := broker.Publish(tokenExpiredTopic, msg); err != nil {
-	//	log.Logf("[pub] 发布token删除消息失败： %v", err)
-	//} else {
-	//	fmt.Println("[pub] 发布token删除消息：", string(msg.Body))
-	//}
 	return
 }
 
@@ -77,7 +68,15 @@ func (s *tokenService) GetUserId(token string) (userId int64, err error) {
 		err = fmt.Errorf("[DelUserAccessToken] 错误的token，err: %s", err)
 		return
 	}
-	userId, err = strconv.ParseInt(claims.Id, 10, 64)
+
+	// 检查token是否过期
+	token2, err := s.getTokenToCache(&Subject{Id: claims.Subject})
+	if err != nil || token2 != token {
+		log.Errorf("authsrv: token过期, err: %v", err)
+		return
+	}
+
+	userId, err = strconv.ParseInt(claims.Subject, 10, 64)
 	if err != nil {
 		log.Errorf("authsrv: 解析失败, err: %v", err)
 		return
